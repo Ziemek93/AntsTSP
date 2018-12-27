@@ -32,18 +32,26 @@ namespace AntsTSP
         public string errorMsg = "";
         private string fileName;
         private int antNum;
+        private double decision;
+        private Random q;
+        private const float q0 = 0.9f;
 
+        private double[,] cityArr;
+        private double[,] pheromone;
 
         private double [,,,] antsArr; // , , ,this city number
         public Ants(string fileName, int antNum)
         {
             this.fileName = fileName;
             this.antNum = antNum;
+
+            //q = new Random(100);
         }
 
         public double [,] Cities()
         {
-            double [,] cityArr;
+        
+
             int length = 0;
 
             try
@@ -56,6 +64,7 @@ namespace AntsTSP
                     length++;
                 }
                 cityArr = new double[length, length];
+                pheromone = new double[length, length];
 
                 foreach (string row in input.Split('\n'))
                 {
