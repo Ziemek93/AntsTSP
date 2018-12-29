@@ -10,6 +10,8 @@ namespace AntsTSP
    // using alias = ns1;
     class Program
     {
+        public double[,] pheromone;
+
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
@@ -24,11 +26,16 @@ namespace AntsTSP
     }
 
 
-  
 
-     class Ants
+
+    class Ants
     {
-        public int x = 1;
+        public const float beta = 0.6f;
+        public const float alfa = 0.2f;
+        public const float p = 0.6f;
+
+        int length;
+
         public string errorMsg = "";
         private string fileName;
         private int antNum;
@@ -36,10 +43,32 @@ namespace AntsTSP
         private Random q;
         private const float q0 = 0.9f;
 
-        private double[,] cityArr;
-        private double[,] pheromone;
+        public double[,] cityArr;
+        public double[,] pheromone;
 
-        private double [,,,] antsArr; // , , ,this city number
+        private Ant[] antsArr; // , , ,this city number
+
+        public void iniAnts()
+        {
+            Random r = new Random();
+            int [] randCities = new int[antNum];
+
+            int x;
+            int i = 0;
+            while (i < antNum)
+            {
+                 x = r.Next(length);
+                //if (check( x, randCities))
+                // {
+                //     antsArr[i] = new Ant(x);
+                //     i++;
+                // }
+                antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+                i++;
+            }
+            
+        }
+
         public Ants(string fileName, int antNum)
         {
             this.fileName = fileName;
@@ -48,11 +77,11 @@ namespace AntsTSP
             //q = new Random(100);
         }
 
-        public double [,] Cities()
+        public void Cities()
         {
-        
 
-            int length = 0;
+
+            this.length = 0;
 
             try
             {
@@ -61,38 +90,55 @@ namespace AntsTSP
 
                 foreach (var row in input.Split('\n')) // cities number
                 {
-                    length++;
+                    this.length++;
                 }
-                cityArr = new double[length, length];
-                pheromone = new double[length, length];
+                cityArr = new double[length, length - 1];
+                pheromone = new double[length, length - 1];
 
                 foreach (string row in input.Split('\n'))
                 {
-                    
+
                     j = 0;
                     foreach (string col in row.Trim().Split(' '))
                     {
-                            cityArr[i, j] = double.Parse(col.Trim());
+                        cityArr[i, j] = double.Parse(col.Trim());
+                        pheromone[i, j] = 0.2;
+
                         j++;
                     }
                     i++;
                 }
+                this.cityArr = cityArr;
+               // Console.WriteLine("Length = " +  cityArr.GetLength(1));
 
-                return cityArr;
+               
 
-            }   
-            
+            }
+
             catch (Exception ex)
             {
                 errorMsg = "Could not read the file: " + ex;
                 Console.Write(errorMsg);
 
-                return null;
+               
             }
 
-            
+
         }
 
+        public bool check(int value, int []randCities)
+        {
 
+            foreach(int x in randCities)
+            {
+                if(value == x)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        
     }
 }
