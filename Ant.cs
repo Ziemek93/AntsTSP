@@ -158,7 +158,8 @@ namespace AntsTSP
             //    Console.WriteLine(x);
             //}
           //  Console.WriteLine("-----------------------------------Going to roulette-----------------");
-            return Roulette(decisionArr); // wieksza szansa na wybranie lepszej ścieżki
+           return Roulette(decisionArr); // wieksza szansa na wybranie lepszej ścieżki
+           //this.decision = decisionArr.Max();
 
         }
 
@@ -186,25 +187,26 @@ namespace AntsTSP
                 bestCounter++;
 
                 ActiveCity = nextCity;// ?
-                
-              //  Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+
+                if(Finish)
+                {
+                    //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
+                    //foreach (double w in best)
+                    //{
+                    //    Console.WriteLine(w);
+                    //}
+                    visited = null;
+                    visited = new ArrayList();
+                    bestCounter = 0;
+                    Finish = false;
+                    //Console.WriteLine(Finish);
+                    // Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+                }
+
+                //  Console.WriteLine("-------------------------------------------------------------------------------------------------------");
 
             }
-            else
-            {
-                //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
-                //foreach (double w in best)
-                //{
-                //    Console.WriteLine(w);
-                //}
-                visited = null;
-                visited = new ArrayList();
-                bestCounter = 0;
-                Finish = false;
-                //Console.WriteLine(Finish);
-                //Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-            }
-            //}
+            
 
 
             return pheromone;
@@ -231,7 +233,7 @@ namespace AntsTSP
 
             foreach (int x in randCities)
             {
-                //Console.WriteLine("                   " + value + "  ==  " + x);
+                // Console.WriteLine("                                     " + value + "  ==  " + x);
                 if (value == x)
                 {
                     return false;
@@ -255,25 +257,33 @@ namespace AntsTSP
             double sum = paths.Sum();
             int[] resCount = new int[paths.Length];
             int i = 0;
-           // Console.WriteLine("S");
-             
+            // Console.WriteLine("S");
+         //   Console.WriteLine("---------------------------");
             int counter = 0;
+
+            foreach(int k in visited)
+            {
+
+          //      Console.WriteLine("VIISISITED " + k);
+            }
+            //Console.WriteLine("visited" + visited.Count + " paths " + paths.Length);
+            //Console.WriteLine("refPaths.Length " + refPaths.Length + " - " + visited.Count);
             while (i < refPaths.Length)
             {
                
                 if (check(i, visited))
                 {
-                  //  Console.WriteLine("refPaths.Length " + refPaths.Length + " - " + visited.Count);
-                 //   Console.WriteLine("counter " + counter + "   visited" + visited.Count);
-                    resCount[counter] = i;
+                   
+                 //Console.WriteLine("counter " + counter + "  " +  i);
+                    resCount[counter] = i; // spierdala czasem pozazakres
                     paths[counter] = refPaths[i];
-                    //Console.WriteLine(paths[counter] + " | " + resCount[counter] + "   i = " + i);
+                  //   Console.WriteLine(paths[counter] + " | " + resCount[counter] + "   i = " + i);
                     counter++;
                 }
                 i++;
             }
              i = 0;
-           
+          //  Console.WriteLine("---------------------------");
             //Console.WriteLine("S");
             //foreach (double x in paths)
             //{
@@ -321,13 +331,13 @@ namespace AntsTSP
 		 {
                 
                 value = paths[i] + lastValue;
-            //   Console.WriteLine("RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i]);
-                if (randomPoint > lastValue && randomPoint < value)
+             // Console.WriteLine("RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i]);
+                if (randomPoint >= lastValue && randomPoint <= value)
                 {
                   
                     choosenRes = resCount[i];
                     resultPh = paths[i];
-                   // Console.WriteLine("Hey " + choosenRes);
+                   //  Console.WriteLine("Hey " + choosenRes);
                     break;
                 }
                 lastValue = value;

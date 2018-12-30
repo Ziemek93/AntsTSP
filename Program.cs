@@ -70,10 +70,10 @@ namespace AntsTSP
             }
             i = 0;
             int j = 0;
-            while (j < 100)
+            while (j < 1000)
             {
 //Console.WriteLine("Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
-                while (i < length + 1) // kroki do przejscia po kazdym miescie
+                while (i < length  ) // kroki do przejscia po kazdym miescie
                 {
                     
                     foreach (Ant ant in antsArr)
