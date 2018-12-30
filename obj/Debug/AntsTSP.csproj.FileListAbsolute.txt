@@ -1,7 +1,7 @@
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\bin\Debug\AntsTSP.exe.config
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\bin\Debug\AntsTSP.exe
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\bin\Debug\AntsTSP.pdb
-C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\obj\Debug\AntsTSP.csprojAssemblyReference.cache
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\obj\Debug\AntsTSP.csproj.CoreCompileInputs.cache
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\obj\Debug\AntsTSP.exe
 C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\obj\Debug\AntsTSP.pdb
+C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\obj\Debug\AntsTSP.csprojAssemblyReference.cache

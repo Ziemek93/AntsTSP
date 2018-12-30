@@ -20,12 +20,15 @@ namespace AntsTSP
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
             a.Cities();
+            a.iniAnts();
+
+          
 
             Console.ReadKey();
         }
     }
 
-
+ 
 
 
     class Ants
@@ -39,8 +42,8 @@ namespace AntsTSP
         public string errorMsg = "";
         private string fileName;
         private int antNum;
-        private double decision;
-        private Random q;
+         
+        
         private const float q0 = 0.9f;
 
         public double[,] cityArr;
@@ -52,22 +55,55 @@ namespace AntsTSP
         {
             Random r = new Random();
             int [] randCities = new int[antNum];
+            antsArr = new Ant[antNum];
+
 
             int x;
             int i = 0;
+
             while (i < antNum)
             {
-                 x = r.Next(length);
-                //if (check( x, randCities))
-                // {
-                //     antsArr[i] = new Ant(x);
-                //     i++;
-                // }
+                x = r.Next(length);
                 antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+
                 i++;
+            }
+            i = 0;
+            int j = 0;
+            while (j < 100)
+            {
+//Console.WriteLine("Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                while (i < length + 1) // kroki do przejscia po kazdym miescie
+                {
+                    
+                    foreach (Ant ant in antsArr)
+                    {
+
+                        ant.UpdateArrays(pheromone);
+                        pheromone = ant.move();
+                    }
+                    //if (check( x, randCities))
+                    // {
+                    //     antsArr[i] = new Ant(x);
+                    //     i++;
+                    // }
+                   
+                    i++;
+                }
+                i = 0;
+                foreach (Ant ant in antsArr)
+                {
+                    ant.getDist(); // do tablicy
+
+                     Console.WriteLine("DISTANCE " + ant.getDist());
+                    ant.distance = 0;
+                }
+               // Console.WriteLine("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+                j++;
             }
             
         }
+       
 
         public Ants(string fileName, int antNum)
         {
@@ -92,9 +128,9 @@ namespace AntsTSP
                 {
                     this.length++;
                 }
-                cityArr = new double[length, length - 1];
-                pheromone = new double[length, length - 1];
-
+                cityArr = new double[length, length];
+                pheromone = new double[length, length];
+                
                 foreach (string row in input.Split('\n'))
                 {
 
@@ -139,6 +175,14 @@ namespace AntsTSP
 
             return true;
         }
+     
         
+
+
+        public void WinnerChickenDinner()
+        {
+
+        }
+
     }
 }
