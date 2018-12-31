@@ -13,7 +13,7 @@ namespace AntsTSP
         //double [,]pheromone;
         double[,] cities;
         double[,] pheromone;
-        private int Q = 25; // wspolczynnik pozostawianego feromonu
+        private int Q = 500; // wspolczynnik pozostawianego feromonu
 
         private int ActiveCity;
         private float beta; //wspolczynnik
@@ -118,20 +118,16 @@ namespace AntsTSP
         public int makeDecision()
         {
            // Console.WriteLine("-----------------------------------Make decision-----------------");
-            //this.decision = 0;
             bool returning = false;
             double[] decisionArr = null;
 
             this.length = cities.GetLength(1);
 
              visited.Add(ActiveCity); // dodaje aktywne miasto do miast odwiedzonych, tablica miast - x,x,0,x etc, 0 to odwiedzone
-            //Console.WriteLine(visited.Count + "----------------------------------------------------------------------------" + length);
             if (length == visited.Count) { returning = true; }// }visited.RemoveAt(0);  } // końcowe usuwanie punktu startu z listy by mrówka mogła do niego wrócić
 
             
-           
-          //  Console.WriteLine(length + "---------------------------------------------------" + visited.Count);
-            // Console.WriteLine("-----------------------------------------------" + "DODAJE");
+         
             switch (returning)
             {
                 case false:
@@ -139,11 +135,9 @@ namespace AntsTSP
                     break;
 
                 case true:
-                    visited.RemoveAt(0);
-                  //  Console.WriteLine(length + "---------------------------------------------------" + visited.Count);
+                    visited.RemoveAt(0);      
                     decisionArr = countMethod();
-                    //   Console.WriteLine("--------------------------------------Returning true---------Returning home-----------------------------------------------------");
-                    
+                    //   Console.WriteLine("--------------------------------------Returning true---------Returning home-----------------------------------------------------");  
                     Finish = true; // wszystkie miasta zostaly odwiedzone wiec nie trzeba szukac dalej
                   //  Console.WriteLine(Finish);
 
@@ -176,12 +170,13 @@ namespace AntsTSP
                 //Console.WriteLine(Finish);
                nextCity = makeDecision();
                 //if(nextCity < 0) { Console.WriteLine("Something goes wrong in move"); }
-               // Console.WriteLine("DECISION " + nextCity);
+                // Console.WriteLine("DECISION " + nextCity);
+               
                 pheromone[ActiveCity, nextCity] = (1 - p) * pheromone[ActiveCity, nextCity] + Q / cities[ActiveCity, nextCity]; // parowanie i zostawianie feromonu
                 int j = 0;
-
+                // Console.WriteLine(pheromone[ActiveCity, nextCity] + "     "  +ActiveCity + " - " + nextCity + "  length" + cities[ActiveCity, nextCity]);
                 distance += cities[ActiveCity, nextCity];
-               // Console.WriteLine(distance);
+                 
                 best[bestCounter, 0] = ActiveCity;
                 best[bestCounter, 1] = pheromone[ActiveCity, nextCity];
                 bestCounter++;
@@ -331,7 +326,7 @@ namespace AntsTSP
 		 {
                 
                 value = paths[i] + lastValue;
-             // Console.WriteLine("RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i]);
+            // Console.WriteLine("       RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i] + "  xxx " + cities[ActiveCity, resCount[i]] );
                 if (randomPoint >= lastValue && randomPoint <= value)
                 {
                   

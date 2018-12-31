@@ -15,7 +15,7 @@ namespace AntsTSP
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
-            int antNum = 20;
+            int antNum = 40;
             //ns1.Ants a = new ns1.Ants();
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
@@ -34,8 +34,8 @@ namespace AntsTSP
     class Ants
     {
         public const float beta = 0.6f;
-        public const float alfa = 0.2f;
-        public const float p = 0.6f;
+        public const float alfa = 0.4f;
+        public const float p = 0.7f;
 
         int length;
 
@@ -70,7 +70,7 @@ namespace AntsTSP
             }
             i = 0;
             int j = 0;
-            while (j < 1000)
+            while (j < 500)
             {
 //Console.WriteLine("Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 while (i < length  ) // kroki do przejscia po kazdym miescie
@@ -97,6 +97,9 @@ namespace AntsTSP
 
                      Console.WriteLine("DISTANCE " + ant.getDist());
                     ant.distance = 0;
+
+                    x = r.Next(length);
+                    antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
                 }
                // Console.WriteLine("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
                 j++;
