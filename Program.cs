@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AntsTSP
@@ -11,11 +13,12 @@ namespace AntsTSP
     class Program
     {
         public double[,] pheromone;
+        
 
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
-            int antNum = 40;
+            int antNum = 1;
             //ns1.Ants a = new ns1.Ants();
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
@@ -33,8 +36,9 @@ namespace AntsTSP
 
     class Ants
     {
-        public const float beta = 0.6f;
-        public const float alfa = 0.4f;
+        private ArrayList distanceArr = new ArrayList();
+        public const float beta = 0.3f;
+        public const float alfa = 0.7f;
         public const float p = 0.7f;
 
         int length;
@@ -53,6 +57,7 @@ namespace AntsTSP
 
         public void iniAnts()
         {
+            double srednia = 0;
             Random r = new Random();
             int [] randCities = new int[antNum];
             antsArr = new Ant[antNum];
@@ -70,9 +75,10 @@ namespace AntsTSP
             }
             i = 0;
             int j = 0;
-            while (j < 500)
+
+            while (j < 10000)
             {
-//Console.WriteLine("Xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+ 
                 while (i < length  ) // kroki do przejscia po kazdym miescie
                 {
                     
@@ -81,30 +87,78 @@ namespace AntsTSP
 
                         ant.UpdateArrays(pheromone);
                         pheromone = ant.move();
+                     
+
                     }
-                    //if (check( x, randCities))
-                    // {
-                    //     antsArr[i] = new Ant(x);
-                    //     i++;
-                    // }
+                    
                    
                     i++;
                 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+                //  Thread.Sleep(10);
+                 // Console.Clear();
+                //  Console.WriteLine("Srednia: " + srednia);
+                for (int y = 0; y < pheromone.GetLength(0); y++)
+                {
+                    for (int z = 0; z < pheromone.GetLength(0); z++)
+                    {
+
+                        //Console.Write(pheromone[y, z] + " ");
+                        //Console.Write(Math.Round(pheromone[y, z], 1, MidpointRounding.AwayFromZero)  + " ");
+                    }
+                    //  Console.WriteLine();
+                }
+
+
                 i = 0;
+                srednia = 0;
                 foreach (Ant ant in antsArr)
                 {
+                    distanceArr.Add(ant.getDist());
                     ant.getDist(); // do tablicy
-
-                     Console.WriteLine("DISTANCE " + ant.getDist());
+                    srednia += ant.getDist();
+                   // Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
+                     
                     ant.distance = 0;
 
                     x = r.Next(length);
                     antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
                 }
-               // Console.WriteLine("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+                srednia = srednia / (i + 1);
+                
                 j++;
+
+
+                double Max = double.MinValue;
+                double Min = double.MaxValue;
+
+                foreach (double k in distanceArr)
+                {
+                    if (Max < k)
+                    {
+                        Max = k;
+                    }
+                    if (Min > k)
+                    {
+                        Min = k;
+                    }
+                }
+                int licznik = 0;
+                foreach(double z in distanceArr)
+                {
+                    if(z == Min)
+                    {
+                        licznik++;
+                    }
+                }
+                //Console.WriteLine(licznik + "   " + Min);
+                distanceArr.Clear();
+/////////////////////////////////////////////////////////////////////////////////////////////////////
             }
-            
+
+
+
         }
        
 
@@ -113,6 +167,7 @@ namespace AntsTSP
             this.fileName = fileName;
             this.antNum = antNum;
 
+            
             //q = new Random(100);
         }
 
