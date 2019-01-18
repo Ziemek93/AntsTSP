@@ -23,7 +23,7 @@ namespace AntsTSP
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
             a.Cities();
-            a.iniAnts();
+            a.iniAnts("global"); // local_global, global
 
           
 
@@ -36,11 +36,12 @@ namespace AntsTSP
 
     class Ants
     {
+        private int choosenOne = 0;
         private ArrayList distanceArr = new ArrayList();
-        public const float beta = 0.3f;
-        public const float alfa = 0.7f;
-        public const float p = 0.7f;
-
+        public const float beta = 0.4f;
+        public const float alfa = 0.9f;
+        public const float p = 0.9f;
+        double shortest = 0;
         int length;
 
         public string errorMsg = "";
@@ -55,7 +56,7 @@ namespace AntsTSP
 
         private Ant[] antsArr; // , , ,this city number
 
-        public void iniAnts()
+        public void iniAnts(string pheromoneMethod)
         {
             double srednia = 0;
             Random r = new Random();
@@ -75,10 +76,11 @@ namespace AntsTSP
             }
             i = 0;
             int j = 0;
-
+            switch(pheromoneMethod)
+            { }
             while (j < 10000)
             {
- 
+               
                 while (i < length  ) // kroki do przejscia po kazdym miescie
                 {
                     
@@ -86,8 +88,8 @@ namespace AntsTSP
                     {
 
                         ant.UpdateArrays(pheromone);
-                        pheromone = ant.move();
-                     
+                        ant.move();
+                        if (pheromoneMethod == "global") { pheromone = ant.getPheromone(); }
 
                     }
                     
@@ -96,17 +98,30 @@ namespace AntsTSP
                 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-                //  Thread.Sleep(10);
-                 // Console.Clear();
+                //  Thread.Sleep(60);
+                //  Console.Clear();
                 //  Console.WriteLine("Srednia: " + srednia);
                 for (int y = 0; y < pheromone.GetLength(0); y++)
                 {
                     for (int z = 0; z < pheromone.GetLength(0); z++)
                     {
+                        if (y != z)
+                        {
+                            Console.WriteLine(" FIRST " + pheromone[y, z] + " FIRST ");
+                            pheromone[y, z] *= (1 - p); // zeruje sie po parowaniu
+                            Console.WriteLine(" SECOND " + pheromone[y, z] + " SECOND ");
+                            if (pheromone[y, z] == 0) { throw new System.ArgumentException("Pheromone[" + y + "," + z + "] == 0"); } // pheromone[y, z] = double.MinValue;
 
-                        //Console.Write(pheromone[y, z] + " ");
-                        //Console.Write(Math.Round(pheromone[y, z], 1, MidpointRounding.AwayFromZero)  + " ");
-                    }
+                            //pheromone[y, z] = Math.Round(pheromone[y, z], 4, MidpointRounding.ToEven);
+                            //Console.Write(pheromone[y, z] + " ");
+
+                            // Console.Write(Math.Round(pheromone[y, z], 4, MidpointRounding.AwayFromZero)  + " ");
+                        }
+                        else
+                        {
+                            //Console.Write("X");
+                        }
+                        }
                     //  Console.WriteLine();
                 }
 
@@ -118,12 +133,13 @@ namespace AntsTSP
                     distanceArr.Add(ant.getDist());
                     ant.getDist(); // do tablicy
                     srednia += ant.getDist();
-                   // Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
+                  //  Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
                      
                     ant.distance = 0;
 
                     x = r.Next(length);
                     antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+                    i++;
                 }
                 srednia = srednia / (i + 1);
                 
@@ -149,10 +165,12 @@ namespace AntsTSP
                 {
                     if(z == Min)
                     {
+                        choosenOne = licznik; // najlepsza trasa, lub jedna z najlepszych
                         licznik++;
                     }
                 }
-                //Console.WriteLine(licznik + "   " + Min);
+               // if (pheromoneMethod == "local_global") { pheromone = antsArr[choosenOne].getPheromone(); Console.WriteLine("PL " + pheromone.Length); }
+              //  Console.WriteLine(licznik + "   " + Min);
                 distanceArr.Clear();
 /////////////////////////////////////////////////////////////////////////////////////////////////////
             }

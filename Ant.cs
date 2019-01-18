@@ -14,7 +14,7 @@ namespace AntsTSP
         //double [,]pheromone;
         double[,] cities;
         double[,] pheromone;
-        private int Q = 100; // wspolczynnik pozostawianego feromonu
+        private int Q = 1000; // wspolczynnik pozostawianego feromonu
 
         private int ActiveCity;
         private float beta; //wspolczynnik
@@ -78,6 +78,7 @@ namespace AntsTSP
           //  Console.WriteLine("aktualne " + ActiveCity);
             int counter = 0;
             int newLength = length + 2 - visited.Count;
+
             while (i < length)
             {
                 //Console.WriteLine("i = " + i);
@@ -102,8 +103,20 @@ namespace AntsTSP
                     }
 
 
-                     
-                    decisionArr[i] = nominator / denominator; // zmiana
+                    try
+                    {
+                        decisionArr[i] = nominator / denominator; // zmiana
+                        
+                        if (denominator == 0)
+                            throw new DivideByZeroException();
+                    }
+                    catch (DivideByZeroException)
+                    {
+                        
+                        throw new System.ArgumentException("Divide by zero countMethod(), probably pheromone = 0 ");
+                    }
+                    
+                    
                     nominator = 0;
                     denominator = 0;
                     counter++;
@@ -157,7 +170,7 @@ namespace AntsTSP
         }
 
 
-        public double [,] move()
+        public void  move()
         {
 
              
@@ -167,19 +180,16 @@ namespace AntsTSP
             //{
             if(!Finish)
             {
+                nextCity = makeDecision();
                 distance += cities[ActiveCity, nextCity];
-                Console.WriteLine(cities[ActiveCity, nextCity]);
-               nextCity = makeDecision();
-                //distance += 10;
-                //if(nextCity < 0) { Console.WriteLine("Something goes wrong in move"); }
-                // Console.WriteLine("DECISION " + nextCity);
-                if (ActiveCity == 3 && nextCity == 4) { Console.WriteLine("X" +   pheromone[ ActiveCity, nextCity] + "  " + p +"  " + " + " + Q + " / " + cities[ActiveCity, nextCity] + "  dis " + distance); }
-                pheromone[ActiveCity, nextCity] = (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
-               if (4 == 4) { Console.WriteLine(pheromone[ActiveCity, nextCity] + "  " + p + "  " + " + " + Q + " / " + cities[ActiveCity, nextCity] + "  dis " + distance + "       distrl" + cities[ActiveCity, nextCity]);}
+              //  Console.WriteLine();
+               //  Console.Write("Przed " + pheromone[ActiveCity, nextCity] + "  ");
+                pheromone[ActiveCity, nextCity] += (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
+                 //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
+                //Console.WriteLine();
                 int j = 0;
-               // Thread.Sleep(1000);
-                // Console.WriteLine(pheromone[ActiveCity, nextCity] + "     "  +ActiveCity + " - " + nextCity + "  length" + cities[ActiveCity, nextCity]);
 
+                
 
                 best[bestCounter, 0] = ActiveCity;
                 best[bestCounter, 1] = pheromone[ActiveCity, nextCity];
@@ -190,14 +200,12 @@ namespace AntsTSP
                 if(Finish)
                 {
                     //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
-                    //foreach (double w in best)
-                    //{
-                    //    Console.WriteLine(w);
-                    //}
+
                     visited = null;
                     visited = new ArrayList();
                     bestCounter = 0;
                     Finish = false;
+
                     //Console.WriteLine(Finish);
                     // Console.WriteLine("-------------------------------------------------------------------------------------------------------");
                 }
@@ -208,13 +216,20 @@ namespace AntsTSP
 
             
 
-                return pheromone;
+              
 
+        }
+
+       public double[,] getPheromone()
+        {
+            
+            return pheromone;
         }
 
        public double getDist()
         {
-            Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+             
+            //Console.WriteLine("-------------------------------------------------------------------------------------------------------");
             return distance;
         }
 
@@ -324,7 +339,7 @@ namespace AntsTSP
 		 {
                 
                 value = paths[i] + lastValue;
-            //Console.WriteLine("       RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i] + "  xxx " + cities[ActiveCity, resCount[i]] );
+           //Console.WriteLine("       RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i] + "  xxx " + cities[ActiveCity, resCount[i]] );
                 if (randomPoint >= lastValue && randomPoint <= value)
                 {
                   
