@@ -18,12 +18,12 @@ namespace AntsTSP
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
-            int antNum = 1;
+            int antNum = 15;
             //ns1.Ants a = new ns1.Ants();
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
             a.Cities();
-            a.iniAnts("global"); // local_global, global
+            a.iniAnts("local_global"); // local_global, global
 
           
 
@@ -58,8 +58,9 @@ namespace AntsTSP
 
         public void iniAnts(string pheromoneMethod)
         {
-            double srednia = 0;
             Random r = new Random();
+            double srednia = 0;
+             
             int [] randCities = new int[antNum];
             antsArr = new Ant[antNum];
 
@@ -74,55 +75,54 @@ namespace AntsTSP
 
                 i++;
             }
-            i = 0;
+            
             int j = 0;
-            switch(pheromoneMethod)
-            { }
+            //switch(pheromoneMethod)
+            //{ }
             while (j < 10000)
             {
-               
-                while (i < length  ) // kroki do przejscia po kazdym miescie
+                 
+
+                //Console.WriteLine("---------------------------- " + j + " -------------------------------");
+                switch (pheromoneMethod)
                 {
-                    
-                    foreach (Ant ant in antsArr)
-                    {
+                    case "global":
+                        globalPheromoneMethod(pheromone);
 
-                        ant.UpdateArrays(pheromone);
-                        ant.move();
-                        if (pheromoneMethod == "global") { pheromone = ant.getPheromone(); }
+                        break;
 
-                    }
-                    
-                   
-                    i++;
+                    case "local_global":
+                        localglobalPheromoneMethod(pheromone);
+
+                        break;
                 }
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-                //  Thread.Sleep(60);
-                //  Console.Clear();
-                //  Console.WriteLine("Srednia: " + srednia);
+                 
+                /////////////////////////////////////////////////////////////////////////////////////////////////////
+                Thread.Sleep(50);
+                Console.Clear();
+                  Console.WriteLine("Srednia: " + srednia);
                 for (int y = 0; y < pheromone.GetLength(0); y++)
                 {
                     for (int z = 0; z < pheromone.GetLength(0); z++)
                     {
                         if (y != z)
                         {
-                            Console.WriteLine(" FIRST " + pheromone[y, z] + " FIRST ");
-                            pheromone[y, z] *= (1 - p); // zeruje sie po parowaniu
-                            Console.WriteLine(" SECOND " + pheromone[y, z] + " SECOND ");
+                            //Console.WriteLine(" FIRST " + pheromone[y, z] + " FIRST ");
+                           // pheromone[y, z] = (pheromone[y, z] * (1 - p) ) < 0.2 ? 0.2 : pheromone[y, z] * (1 - p); // zeruje sie po parowaniu
+                            //Console.WriteLine(" SECOND " + pheromone[y, z] + " SECOND ");
                             if (pheromone[y, z] == 0) { throw new System.ArgumentException("Pheromone[" + y + "," + z + "] == 0"); } // pheromone[y, z] = double.MinValue;
 
                             //pheromone[y, z] = Math.Round(pheromone[y, z], 4, MidpointRounding.ToEven);
                             //Console.Write(pheromone[y, z] + " ");
 
-                            // Console.Write(Math.Round(pheromone[y, z], 4, MidpointRounding.AwayFromZero)  + " ");
+                             Console.Write(Math.Round(pheromone[y, z], 4, MidpointRounding.AwayFromZero)  + " ");
                         }
                         else
                         {
-                            //Console.Write("X");
+                            Console.Write("X ");
                         }
                         }
-                    //  Console.WriteLine();
+                      Console.WriteLine();
                 }
 
 
@@ -133,12 +133,12 @@ namespace AntsTSP
                     distanceArr.Add(ant.getDist());
                     ant.getDist(); // do tablicy
                     srednia += ant.getDist();
-                  //  Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
+                    Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
                      
                     ant.distance = 0;
 
-                    x = r.Next(length);
-                    antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+                    //x = r.Next(length);
+                    //antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
                     i++;
                 }
                 srednia = srednia / (i + 1);
@@ -169,9 +169,18 @@ namespace AntsTSP
                         licznik++;
                     }
                 }
-               // if (pheromoneMethod == "local_global") { pheromone = antsArr[choosenOne].getPheromone(); Console.WriteLine("PL " + pheromone.Length); }
-              //  Console.WriteLine(licznik + "   " + Min);
+                if (pheromoneMethod == "local_global") {  pheromone = antsArr[choosenOne].getPheromone(); } //Console.WriteLine("PL " + pheromone.Length); }
+                Console.WriteLine(licznik + "   " + Min);
                 distanceArr.Clear();
+
+
+                int c = 0;
+                while( c < length)
+                {
+                    antsArr[c] = new Ant(cityArr, pheromone, r.Next(length), beta, alfa, p);
+                    c++;
+                }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
             }
 
@@ -179,6 +188,101 @@ namespace AntsTSP
 
         }
        
+        private void globalPheromoneMethod(double [,] pheromone)
+        {
+
+            double[,] pheromoneCopy = new double[pheromone.GetLength(0), pheromone.GetLength(0)];
+            //this.pheromone = pher.Clone() as double[,];
+             
+            for (int i = 0; i < pheromone.GetLength(0); i++)
+            { 
+                for (int j = 0; j < pheromone.GetLength(0); j++)
+                {
+                    pheromoneCopy[i, j] = pheromone[i, j];
+                    // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
+                }
+            }
+
+
+            int k = 0;
+            
+            //Console.WriteLine("---------------------------- " + j + " -------------------------------");
+            while (k < length) // kroki do przejscia po kazdym miescie
+            {
+
+                foreach (Ant ant in antsArr)
+                {
+
+                    ant.UpdateArrays(pheromone); // updating new pheromon \/
+                    ant.move();
+                    pheromone = ant.getPheromone();
+
+                }
+
+
+                k++;
+            }
+            
+
+
+
+            for(int i = 0; i < pheromone.GetLength(0); i++) // sprawdzanie czy czy dana sciężka była uczeszczana - jesli tak, parowanie feromonu
+            {
+                for (int j = 0; j < pheromone.GetLength(0); j++)
+                {
+                    if (pheromoneCopy[i, j] != pheromone[i, j])
+                    {
+                       pheromone[i, j] = pheromone[i, j] * (1 - p); 
+                        // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
+                    }
+                }
+            }
+
+            this.pheromone = pheromone; // przyoisanie feromonu lok do glob
+
+
+
+        }
+
+        private void localglobalPheromoneMethod(double [,] pheromone)
+        { 
+            //Console.WriteLine("----------------------------------------------------------------------------------------");
+            double[,] pheromoneCopy = new double[pheromone.GetLength(0), pheromone.GetLength(0)];
+
+            for (int i = 0; i < pheromone.GetLength(0); i++)
+            {
+                for (int j = 0; j < pheromone.GetLength(0); j++)
+                {
+                    pheromoneCopy[i, j] = pheromone[i, j];
+                    // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
+                }
+            }
+
+
+  
+            foreach (Ant ant in antsArr)
+            { 
+
+                 
+                ant.UpdateArrays(pheromoneCopy);
+
+            }
+
+            int k = 0;
+            while (k < length) // kroki do przejscia po kazdym miescie
+            {
+
+                foreach (Ant ant in antsArr)
+                {
+
+                   //ant.UpdateArrays(pheromone); // updating new pheromon \/
+                    ant.moveLocal();
+                   // pheromone = ant.getPheromone();
+
+                }
+                k++;
+            }
+        }
 
         public Ants(string fileName, int antNum)
         {

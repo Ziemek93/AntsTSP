@@ -14,7 +14,7 @@ namespace AntsTSP
         //double [,]pheromone;
         double[,] cities;
         double[,] pheromone;
-        private int Q = 1000; // wspolczynnik pozostawianego feromonu
+        private int Q = 500; // wspolczynnik pozostawianego feromonu
 
         private int ActiveCity;
         private float beta; //wspolczynnik
@@ -29,8 +29,19 @@ namespace AntsTSP
 
         //double []decisionArr;
 
-        public Ant(double [,] cities, double [,] pheromone, int iniCity, float beta, float alfa, float p)
+        public Ant(double [,] cities, double [,] pher, int iniCity, float beta, float alfa, float p)
         {
+            this.pheromone = new double[pher.GetLength(0), pher.GetLength(0)];
+            for (int i = 0; i < pher.GetLength(0); i++)
+            {
+                for (int j = 0; j < pher.GetLength(0); j++)
+                {
+                    this.pheromone[i, j] = pher[i, j];
+                    // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
+                }
+            }
+
+
             best = new double[cities.GetLength(1), 2];
             this.cities = cities;
             //this.pheromone = pheromone.Clone() as double[,];
@@ -54,7 +65,13 @@ namespace AntsTSP
                 for(int j = 0; j < pher.GetLength(0); j++)
                 {
                     this.pheromone[i, j] = pher[i, j];
+                   // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
                 }
+            }
+
+            if(pheromone != pheromone)
+            {
+                throw new System.ArgumentException("Updated pheromone == null");
             }
 
            // visited = null; // czyszczona jest poprzednia lista odwiedzonych miast
@@ -96,7 +113,8 @@ namespace AntsTSP
                         {
 
                             denominator += Math.Pow(pheromone[ActiveCity, j], alfa) * Math.Pow(1 / cities[ActiveCity, j], beta); // mianownik ułamka
-                          //Console.WriteLine("D " +denominator + " = " + pheromone[ActiveCity, j] + "^alfa" + " * " + 1 / cities[ActiveCity, j] + "^beta");
+                                                                                                                                 // Console.WriteLine("D " +denominator + " = " + pheromone[ActiveCity, j] + "^alfa" + " * " + 1 / cities[ActiveCity, j] + "^beta");
+                            
                         }
                        
                         j++;
@@ -107,7 +125,7 @@ namespace AntsTSP
                     {
                         decisionArr[i] = nominator / denominator; // zmiana
                         
-                        if (denominator == 0)
+                        if (denominator == 0 || nominator == 0)
                             throw new DivideByZeroException();
                     }
                     catch (DivideByZeroException)
@@ -132,7 +150,7 @@ namespace AntsTSP
             return decisionArr;
         }
 
-        public int makeDecision()
+        public int makeDecision()//nie wlatuje
         {
              
 
@@ -144,8 +162,7 @@ namespace AntsTSP
 
              visited.Add(ActiveCity); // dodaje aktywne miasto do miast odwiedzonych, tablica miast - x,x,0,x etc, 0 to odwiedzone
             if (length == visited.Count) { returning = true; }// }visited.RemoveAt(0);  } // końcowe usuwanie punktu startu z listy by mrówka mogła do niego wrócić
-
-            
+ 
          
             switch (returning)
             {
@@ -170,26 +187,27 @@ namespace AntsTSP
         }
 
 
-        public void  move()
+        public void move()
         {
 
-             
-                int nextCity = 0;
-            
+
+            int nextCity = 0;
+
             //while(Finish)
             //{
-            if(!Finish)
+            if (!Finish)
             {
+                //Console.WriteLine("!FINISH");
                 nextCity = makeDecision();
                 distance += cities[ActiveCity, nextCity];
-              //  Console.WriteLine();
-               //  Console.Write("Przed " + pheromone[ActiveCity, nextCity] + "  ");
-                pheromone[ActiveCity, nextCity] += (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
-                 //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
                 //Console.WriteLine();
+                //Console.Write("Przed " + pheromone[ActiveCity, nextCity] + "  ");
+                pheromone[ActiveCity, nextCity] += (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
+                                                                  //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
+                                                                  //Console.WriteLine();
                 int j = 0;
 
-                
+
 
                 best[bestCounter, 0] = ActiveCity;
                 best[bestCounter, 1] = pheromone[ActiveCity, nextCity];
@@ -197,10 +215,10 @@ namespace AntsTSP
 
                 ActiveCity = nextCity;// ?
 
-                if(Finish)
+                if (Finish)
                 {
                     //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
-
+                    // Console.WriteLine("Visited count " + visited.Count);
                     visited = null;
                     visited = new ArrayList();
                     bestCounter = 0;
@@ -214,13 +232,54 @@ namespace AntsTSP
 
             }
 
-            
+        }
 
-              
+
+        public void moveLocal()
+        {
+            int nextCity = 0;
+
+            //while(Finish)
+            //{
+            if (!Finish)
+            {
+                //Console.WriteLine("!FINISH");
+                nextCity = makeDecision();
+                distance += cities[ActiveCity, nextCity];
+                //Console.WriteLine();
+                //Console.Write("Przed " + pheromone[ActiveCity, nextCity] + "  ");
+                pheromone[ActiveCity, nextCity] = (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
+                                                                  //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
+                                                                  //Console.WriteLine();
+                int j = 0;
+
+
+
+                best[bestCounter, 0] = ActiveCity;
+                best[bestCounter, 1] = pheromone[ActiveCity, nextCity];
+                bestCounter++;
+
+                ActiveCity = nextCity;// ?
+
+                if (Finish)
+                {
+                    //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
+                    // Console.WriteLine("Visited count " + visited.Count);
+                    visited = null;
+                    visited = new ArrayList();
+                    bestCounter = 0;
+                    Finish = false;
+
+                    //Console.WriteLine(Finish);
+                    // Console.WriteLine("-------------------------------------------------------------------------------------------------------");
+                }
+            }
 
         }
 
-       public double[,] getPheromone()
+        
+
+        public double[,] getPheromone()
         {
             
             return pheromone;
