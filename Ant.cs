@@ -14,7 +14,7 @@ namespace AntsTSP
         //double [,]pheromone;
         double[,] cities;
         double[,] pheromone;
-        private int Q = 500; // wspolczynnik pozostawianego feromonu
+        private int Q = 5000; // wspolczynnik pozostawianego feromonu
 
         private int ActiveCity;
         private float beta; //wspolczynnik
@@ -246,11 +246,15 @@ namespace AntsTSP
                 //Console.WriteLine("!FINISH");
                 nextCity = makeDecision();
                 distance += cities[ActiveCity, nextCity];
-                //Console.WriteLine();
-                //Console.Write("Przed " + pheromone[ActiveCity, nextCity] + "  ");
-                pheromone[ActiveCity, nextCity] = (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
-                                                                  //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
-                                                                  //Console.WriteLine();
+               /// Console.WriteLine();
+               // Console.Write(ActiveCity + " - " + nextCity + "  Przed " + pheromone[ActiveCity, nextCity] + "  ");
+                pheromone[ActiveCity, nextCity] = pheromone[ActiveCity, nextCity] + (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
+                pheromone[nextCity, ActiveCity] = pheromone[ActiveCity, nextCity];
+
+                 
+
+                 //Console.Write("Po    " + pheromone[ActiveCity, nextCity] + "  ");                                            //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
+               // Console.WriteLine();                                                                                                            //Console.WriteLine();
                 int j = 0;
 
 
@@ -270,6 +274,8 @@ namespace AntsTSP
                     bestCounter = 0;
                     Finish = false;
 
+
+                   
                     //Console.WriteLine(Finish);
                     // Console.WriteLine("-------------------------------------------------------------------------------------------------------");
                 }
@@ -281,8 +287,20 @@ namespace AntsTSP
 
         public double[,] getPheromone()
         {
-            
-            return pheromone;
+            double [,] pher  = new double[pheromone.GetLength(0), pheromone.GetLength(0)];
+            for (int i = 0; i < pheromone.GetLength(0); i++)
+            {
+                for (int j = 0; j < pheromone.GetLength(0); j++)
+                {
+                    pher[i, j] = pheromone[i, j];
+                    pher[i, j] = (pher[i, j] * (1 - p)) < 0.0001 ? 0.0001 : pher[i, j] * (1 - p);
+                  //  Console.Write(pher[i, j] + "  "  );
+                }
+               // Console.WriteLine();
+            }
+
+
+            return pher;
         }
 
        public double getDist()

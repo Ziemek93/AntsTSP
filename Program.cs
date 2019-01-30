@@ -18,7 +18,7 @@ namespace AntsTSP
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
-            int antNum = 15;
+            int antNum = 25;
             //ns1.Ants a = new ns1.Ants();
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
@@ -38,11 +38,12 @@ namespace AntsTSP
     {
         private int choosenOne = 0;
         private ArrayList distanceArr = new ArrayList();
-        public const float beta = 0.4f;
-        public const float alfa = 0.9f;
+        public const float beta = 5;
+        public const float alfa = 1;
         public const float p = 0.9f;
         double shortest = 0;
         int length;
+        double srednia;
 
         public string errorMsg = "";
         private string fileName;
@@ -59,7 +60,7 @@ namespace AntsTSP
         public void iniAnts(string pheromoneMethod)
         {
             Random r = new Random();
-            double srednia = 0;
+            
              
             int [] randCities = new int[antNum];
             antsArr = new Ant[antNum];
@@ -82,6 +83,8 @@ namespace AntsTSP
             while (j < 10000)
             {
                  
+                Thread.Sleep(20);
+                Console.Clear();
 
                 //Console.WriteLine("---------------------------- " + j + " -------------------------------");
                 switch (pheromoneMethod)
@@ -98,9 +101,10 @@ namespace AntsTSP
                 }
                  
                 /////////////////////////////////////////////////////////////////////////////////////////////////////
-                Thread.Sleep(50);
-                Console.Clear();
+                
                   Console.WriteLine("Srednia: " + srednia);
+                srednia = 0;
+
                 for (int y = 0; y < pheromone.GetLength(0); y++)
                 {
                     for (int z = 0; z < pheromone.GetLength(0); z++)
@@ -108,14 +112,14 @@ namespace AntsTSP
                         if (y != z)
                         {
                             //Console.WriteLine(" FIRST " + pheromone[y, z] + " FIRST ");
-                           // pheromone[y, z] = (pheromone[y, z] * (1 - p) ) < 0.2 ? 0.2 : pheromone[y, z] * (1 - p); // zeruje sie po parowaniu
+                           // pheromone[y, z] = (pheromone[y, z] * (1 - p) ) < 000000000000000000000.2 ? 000000000000000000000.2 : (pheromone[y, z] * (1 - p)); // zeruje sie po parowaniu
                             //Console.WriteLine(" SECOND " + pheromone[y, z] + " SECOND ");
                             if (pheromone[y, z] == 0) { throw new System.ArgumentException("Pheromone[" + y + "," + z + "] == 0"); } // pheromone[y, z] = double.MinValue;
 
                             //pheromone[y, z] = Math.Round(pheromone[y, z], 4, MidpointRounding.ToEven);
-                            //Console.Write(pheromone[y, z] + " ");
+                           // Console.Write(pheromone[y, z] + " ");
 
-                             Console.Write(Math.Round(pheromone[y, z], 4, MidpointRounding.AwayFromZero)  + " ");
+                             Console.Write(Math.Round(pheromone[y, z], 3, MidpointRounding.AwayFromZero)  + " ");
                         }
                         else
                         {
@@ -126,56 +130,11 @@ namespace AntsTSP
                 }
 
 
-                i = 0;
-                srednia = 0;
-                foreach (Ant ant in antsArr)
-                {
-                    distanceArr.Add(ant.getDist());
-                    ant.getDist(); // do tablicy
-                    srednia += ant.getDist();
-                    Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
-                     
-                    ant.distance = 0;
-
-                    //x = r.Next(length);
-                    //antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
-                    i++;
-                }
-                srednia = srednia / (i + 1);
-                
                 j++;
 
 
-                double Max = double.MinValue;
-                double Min = double.MaxValue;
-
-                foreach (double k in distanceArr)
-                {
-                    if (Max < k)
-                    {
-                        Max = k;
-                    }
-                    if (Min > k)
-                    {
-                        Min = k;
-                    }
-                }
-                int licznik = 0;
-                foreach(double z in distanceArr)
-                {
-                    if(z == Min)
-                    {
-                        choosenOne = licznik; // najlepsza trasa, lub jedna z najlepszych
-                        licznik++;
-                    }
-                }
-                if (pheromoneMethod == "local_global") {  pheromone = antsArr[choosenOne].getPheromone(); } //Console.WriteLine("PL " + pheromone.Length); }
-                Console.WriteLine(licznik + "   " + Min);
-                distanceArr.Clear();
-
-
                 int c = 0;
-                while( c < length)
+                while( c < antsArr.Length) // wyjatek przy mniejeszej ilosci mrowek, leci po dl
                 {
                     antsArr[c] = new Ant(cityArr, pheromone, r.Next(length), beta, alfa, p);
                     c++;
@@ -245,11 +204,13 @@ namespace AntsTSP
         }
 
         private void localglobalPheromoneMethod(double [,] pheromone)
-        { 
+        {
+            int i = 0;
+
             //Console.WriteLine("----------------------------------------------------------------------------------------");
             double[,] pheromoneCopy = new double[pheromone.GetLength(0), pheromone.GetLength(0)];
 
-            for (int i = 0; i < pheromone.GetLength(0); i++)
+            for ( i = 0; i < pheromone.GetLength(0); i++)
             {
                 for (int j = 0; j < pheromone.GetLength(0); j++)
                 {
@@ -275,13 +236,63 @@ namespace AntsTSP
                 foreach (Ant ant in antsArr)
                 {
 
-                   //ant.UpdateArrays(pheromone); // updating new pheromon \/
+                    //ant.UpdateArrays(pheromone); // updating new pheromon \/
                     ant.moveLocal();
-                   // pheromone = ant.getPheromone();
+                    // pheromone = ant.getPheromone();
 
                 }
                 k++;
             }
+
+            
+
+
+
+            i = 0;
+            
+            foreach (Ant ant in antsArr)
+            {
+                distanceArr.Add(ant.getDist());
+                //ant.getDist(); // do tablicy
+                srednia += ant.getDist();
+                Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
+
+                ant.distance = 0;
+
+                //x = r.Next(length);
+                //antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+                i++;
+            }
+            srednia = srednia / (i + 1);
+            
+             
+            double Max = double.MinValue;
+            double Min = double.MaxValue;
+
+            foreach (double qk in distanceArr)
+            {
+                if (Max < qk)
+                {
+                    Max = qk;
+                }
+                if (Min > qk)
+                {
+                    Min = qk;
+                }
+            }
+            int licznik = 0;
+            foreach (double z in distanceArr)
+            {
+                if (z == Min)
+                {
+                    choosenOne = licznik; // najlepsza trasa, lub jedna z najlepszych
+                    licznik++;
+                }
+            }
+            this.pheromone = antsArr[choosenOne].getPheromone();  //Console.WriteLine("PL " + pheromone.Length); }
+            Console.WriteLine(licznik + "   " + Min);
+
+            distanceArr.Clear();
         }
 
         public Ants(string fileName, int antNum)
