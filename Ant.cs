@@ -10,11 +10,11 @@ namespace AntsTSP
 {
     class Ant
     {
-
+        Random r;
         //double [,]pheromone;
         double[,] cities;
         double[,] pheromone;
-        private int Q = 5000; // wspolczynnik pozostawianego feromonu
+        private int Q = 500; // wspolczynnik pozostawianego feromonu
 
         private int ActiveCity;
         private float beta; //wspolczynnik
@@ -27,10 +27,13 @@ namespace AntsTSP
         private int bestCounter;
         public double distance = 0;
 
+        public int test = 0;
         //double []decisionArr;
 
-        public Ant(double [,] cities, double [,] pher, int iniCity, float beta, float alfa, float p)
+        public Ant(double [,] cities, double [,] pher, int iniCity, float beta, float alfa, float p, Random r)
         {
+            this.r = r;
+            test = iniCity;
             this.pheromone = new double[pher.GetLength(0), pher.GetLength(0)];
             for (int i = 0; i < pher.GetLength(0); i++)
             {
@@ -53,6 +56,8 @@ namespace AntsTSP
             this.p = p;
 
             visited = new ArrayList();
+
+             
         }
 
 
@@ -334,8 +339,8 @@ namespace AntsTSP
             //Console.WriteLine(" PL " + paths.Length + " visited " + visited.Count);
              
 
-            Random r = new Random();
-            double randomPoint;
+             
+            double randomPoint = 0;
             double resultPh = 0;
 
             double sum = paths.Sum();
@@ -357,7 +362,7 @@ namespace AntsTSP
                
                 if (check(i, visited))
                 {
-                   // Console.WriteLine(paths.Length + " " + counter + "  miasto nr" + i);
+                    //Console.WriteLine(paths.Length + " " + counter + "  miasto nr" + i);
                     //Console.WriteLine("counter " + counter + "  " +  i);
                     resCount[counter] = i; // spierdala czasem pozazakres
                      
@@ -404,19 +409,20 @@ namespace AntsTSP
             //Console.WriteLine("---------------------------");
 
             randomPoint = (r.Next(0, 100));
-            randomPoint /= 100;
+            randomPoint  = randomPoint /  100;
+            //Console.WriteLine(randomPoint);
 
             int choosenRes = 0;
             i = 0;
             double lastValue = 0;
-
+            
 
             double value = 0 ;
             while (i < paths.Length)
 		 {
                 
                 value = paths[i] + lastValue;
-           //Console.WriteLine("       RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i] + "  xxx " + cities[ActiveCity, resCount[i]] );
+            //Console.WriteLine("       RandomPoint - " + randomPoint + "  lastV - " + lastValue + "   thisV " + value  + "   paths[i] " + paths[i] + "  xxx " + cities[ActiveCity, resCount[i]] );
                 if (randomPoint >= lastValue && randomPoint <= value)
                 {
                   

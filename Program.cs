@@ -18,7 +18,7 @@ namespace AntsTSP
         static void Main(string[] args)
         {
             string path = @"C:\Users\Ziemowit\source\repos\AntsTSP\AntsTSP\antsdata.txt";
-            int antNum = 25;
+            int antNum = 4;
             //ns1.Ants a = new ns1.Ants();
             //Console.WriteLine(a.x);
             Ants a = new Ants(path, antNum);
@@ -40,8 +40,8 @@ namespace AntsTSP
         private ArrayList distanceArr = new ArrayList();
         public const float beta = 5;
         public const float alfa = 1;
-        public const float p = 0.9f;
-        double shortest = 0;
+        public const float p = 0.2f;
+        int counter = 0;
         int length;
         double srednia;
 
@@ -72,7 +72,7 @@ namespace AntsTSP
             while (i < antNum)
             {
                 x = r.Next(length);
-                antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
+                antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p, r);
 
                 i++;
             }
@@ -83,7 +83,7 @@ namespace AntsTSP
             while (j < 10000)
             {
                  
-                Thread.Sleep(20);
+                Thread.Sleep(25);
                 Console.Clear();
 
                 //Console.WriteLine("---------------------------- " + j + " -------------------------------");
@@ -99,10 +99,13 @@ namespace AntsTSP
 
                         break;
                 }
-                 
+
                 /////////////////////////////////////////////////////////////////////////////////////////////////////
-                
-                  Console.WriteLine("Srednia: " + srednia);
+
+                //if (counter % 10 == 0)
+               // {
+                    Console.WriteLine("Srednia: " + srednia);// }
+                Console.WriteLine();
                 srednia = 0;
 
                 for (int y = 0; y < pheromone.GetLength(0); y++)
@@ -119,7 +122,7 @@ namespace AntsTSP
                             //pheromone[y, z] = Math.Round(pheromone[y, z], 4, MidpointRounding.ToEven);
                            // Console.Write(pheromone[y, z] + " ");
 
-                             Console.Write(Math.Round(pheromone[y, z], 3, MidpointRounding.AwayFromZero)  + " ");
+                             Console.Write(Math.Round(pheromone[y, z], 6, MidpointRounding.AwayFromZero)  + " ");
                         }
                         else
                         {
@@ -130,13 +133,16 @@ namespace AntsTSP
                 }
 
 
+
+
+                counter++;
                 j++;
 
 
                 int c = 0;
                 while( c < antsArr.Length) // wyjatek przy mniejeszej ilosci mrowek, leci po dl
                 {
-                    antsArr[c] = new Ant(cityArr, pheromone, r.Next(length), beta, alfa, p);
+                    antsArr[c] = new Ant(cityArr, pheromone, r.Next(length), beta, alfa, p, r);
                     c++;
                 }
 
@@ -238,7 +244,7 @@ namespace AntsTSP
 
                     //ant.UpdateArrays(pheromone); // updating new pheromon \/
                     ant.moveLocal();
-                    // pheromone = ant.getPheromone();
+                    //ppheromone = ant.getPheromone();
 
                 }
                 k++;
@@ -255,7 +261,7 @@ namespace AntsTSP
                 distanceArr.Add(ant.getDist());
                 //ant.getDist(); // do tablicy
                 srednia += ant.getDist();
-                Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
+               // Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
 
                 ant.distance = 0;
 
@@ -290,7 +296,8 @@ namespace AntsTSP
                 }
             }
             this.pheromone = antsArr[choosenOne].getPheromone();  //Console.WriteLine("PL " + pheromone.Length); }
-            Console.WriteLine(licznik + "   " + Min);
+          //  if (counter % 10 == 0) {
+                Console.WriteLine(licznik + "   " + Min);// }
 
             distanceArr.Clear();
         }
@@ -349,6 +356,16 @@ namespace AntsTSP
 
                
             }
+
+
+            //for (int i = 0; i < cityArr.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < cityArr.GetLength(0); j++)
+            //    {
+            //        cityArr[i, j] = cityArr[i, j];
+            //        // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
+            //    }
+            //}
 
 
         }
