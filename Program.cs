@@ -102,9 +102,8 @@ namespace AntsTSP
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
-                //if (counter % 10 == 0)
-               // {
-                    Console.WriteLine("Srednia: " + srednia);// }
+              
+                    Console.WriteLine("Srednia: " + srednia);
                 Console.WriteLine();
                 srednia = 0;
 
@@ -118,7 +117,6 @@ namespace AntsTSP
                            // pheromone[y, z] = (pheromone[y, z] * (1 - p) ) < 000000000000000000000.2 ? 000000000000000000000.2 : (pheromone[y, z] * (1 - p)); // zeruje sie po parowaniu
                             //Console.WriteLine(" SECOND " + pheromone[y, z] + " SECOND ");
                             if (pheromone[y, z] == 0) { throw new System.ArgumentException("Pheromone[" + y + "," + z + "] == 0"); } // pheromone[y, z] = double.MinValue;
-
                             //pheromone[y, z] = Math.Round(pheromone[y, z], 4, MidpointRounding.ToEven);
                            // Console.Write(pheromone[y, z] + " ");
 
@@ -140,8 +138,7 @@ namespace AntsTSP
 
 
                 int c = 0;
-                while( c < antsArr.Length) // wyjatek przy mniejeszej ilosci mrowek, leci po dl
-                {
+                while( c < antsArr.Length) { 
                     antsArr[c] = new Ant(cityArr, pheromone, r.Next(length), beta, alfa, p, r);
                     c++;
                 }
@@ -242,32 +239,23 @@ namespace AntsTSP
                 foreach (Ant ant in antsArr)
                 {
 
-                    //ant.UpdateArrays(pheromone); // updating new pheromon \/
-                    ant.moveLocal();
-                    //ppheromone = ant.getPheromone();
-
+                     ant.moveLocal();
+ 
                 }
                 k++;
             }
-
-            
-
-
+             
 
             i = 0;
             
             foreach (Ant ant in antsArr)
             {
                 distanceArr.Add(ant.getDist());
-                //ant.getDist(); // do tablicy
-                srednia += ant.getDist();
-               // Console.WriteLine("DISTANCE " + ant.getDist()); // to leci do tablicy i na jej podstawie biorę najlepszą trase
-
+                 srednia += ant.getDist();
+ 
                 ant.distance = 0;
 
-                //x = r.Next(length);
-                //antsArr[i] = new Ant(cityArr, pheromone, x, beta, alfa, p);
-                i++;
+                  i++;
             }
             srednia = srednia / (i + 1);
             
@@ -311,6 +299,7 @@ namespace AntsTSP
             //q = new Random(100);
         }
 
+        //Ładowanie miast z pliku tekstowego
         public void Cities()
         {
 

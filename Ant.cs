@@ -11,8 +11,7 @@ namespace AntsTSP
     class Ant
     {
         Random r;
-        //double [,]pheromone;
-        double[,] cities;
+         double[,] cities;
         double[,] pheromone;
         private int Q = 500; // wspolczynnik pozostawianego feromonu
 
@@ -28,8 +27,7 @@ namespace AntsTSP
         public double distance = 0;
 
         public int test = 0;
-        //double []decisionArr;
-
+ 
         public Ant(double [,] cities, double [,] pher, int iniCity, float beta, float alfa, float p, Random r)
         {
             this.r = r;
@@ -40,15 +38,13 @@ namespace AntsTSP
                 for (int j = 0; j < pher.GetLength(0); j++)
                 {
                     this.pheromone[i, j] = pher[i, j];
-                    // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
-                }
+                 }
             }
 
 
             best = new double[cities.GetLength(1), 2];
             this.cities = cities;
-            //this.pheromone = pheromone.Clone() as double[,];
-
+ 
             this.ActiveCity = iniCity;
              
             this.beta = beta;
@@ -60,29 +56,23 @@ namespace AntsTSP
              
         }
 
-
+        
         public void UpdateArrays(double [,] pher)
-        {// this.pheromone = pher;
-            //this.pheromone = pher.Clone() as double[,];
+        { 
             this.pheromone = new double[pher.GetLength(0), pher.GetLength(0)];
             for (int i = 0; i < pher.GetLength(0); i++)
             {
                 for(int j = 0; j < pher.GetLength(0); j++)
                 {
                     this.pheromone[i, j] = pher[i, j];
-                   // Console.WriteLine(this.pheromone[i, j] + "   " + pheromone[i, j] );
-                }
+                 }
             }
 
             if(pheromone != pheromone)
             {
                 throw new System.ArgumentException("Updated pheromone == null");
             }
-
-           // visited = null; // czyszczona jest poprzednia lista odwiedzonych miast
-          //  visited = new ArrayList();
-           
-
+ 
         }
 
         public double [] countMethod()
@@ -96,8 +86,7 @@ namespace AntsTSP
             int counter1 = 0, counter2 = 0;
             double nominator = 0;
             double denominator = 0;
-
-          //  Console.WriteLine("aktualne " + ActiveCity);
+             
             int counter = 0;
             int newLength = length + 2 - visited.Count;
 
@@ -155,12 +144,11 @@ namespace AntsTSP
             return decisionArr;
         }
 
+        //makeDecision() odpowiada za podejmowanie decyzji
         public int makeDecision()//nie wlatuje
-        {
-             
+        { 
 
-           // Console.WriteLine("-----------------------------------Make decision-----------------");
-            bool returning = false;
+             bool returning = false;
             double[] decisionArr = null;
 
             this.length = cities.GetLength(1);
@@ -178,17 +166,14 @@ namespace AntsTSP
                 case true:
                     visited.RemoveAt(0);      
                     decisionArr = countMethod();
-                    //   Console.WriteLine("--------------------------------------Returning true---------Returning home-----------------------------------------------------");  
-                    Finish = true; // wszystkie miasta zostaly odwiedzone wiec nie trzeba szukac dalej
+                     Finish = true; // wszystkie miasta zostaly odwiedzone wiec nie trzeba szukac dalej
 
                     break;
 
             }
 
-          //  Console.WriteLine("-----------------------------------Going to roulette-----------------");
-           return Roulette(decisionArr); // wieksza szansa na wybranie lepszej ścieżki
-           //this.decision = decisionArr.Max();
-
+            return Roulette(decisionArr); // wieksza szansa na wybranie lepszej ścieżki
+ 
         }
 
 
@@ -240,26 +225,21 @@ namespace AntsTSP
         }
 
 
+        //metoda move odpowiada za poruszanie się mrówki
         public void moveLocal()
         {
             int nextCity = 0;
 
-            //while(Finish)
-            //{
+             
             if (!Finish)
             {
-                //Console.WriteLine("!FINISH");
+               
                 nextCity = makeDecision();
                 distance += cities[ActiveCity, nextCity];
-               /// Console.WriteLine();
-               // Console.Write(ActiveCity + " - " + nextCity + "  Przed " + pheromone[ActiveCity, nextCity] + "  ");
+              
                 pheromone[ActiveCity, nextCity] = pheromone[ActiveCity, nextCity] + (Q / distance);// (1 - p) * pheromone[ActiveCity, nextCity] + (Q / distance); // parowanie i zostawianie feromonu
                 pheromone[nextCity, ActiveCity] = pheromone[ActiveCity, nextCity];
-
-                 
-
-                 //Console.Write("Po    " + pheromone[ActiveCity, nextCity] + "  ");                                            //Console.Write("  0.1 * " + pheromone[ActiveCity, nextCity] + "  Q " + Q + "  dist " + distance);
-               // Console.WriteLine();                                                                                                            //Console.WriteLine();
+                                                                                                                           
                 int j = 0;
 
 
@@ -271,18 +251,13 @@ namespace AntsTSP
                 ActiveCity = nextCity;// ?
 
                 if (Finish)
-                {
-                    //   Console.WriteLine("-------------------------------------------------------------------------------------------------------" + best.Length + " " );
-                    // Console.WriteLine("Visited count " + visited.Count);
+                { 
                     visited = null;
                     visited = new ArrayList();
                     bestCounter = 0;
                     Finish = false;
-
-
+                     
                    
-                    //Console.WriteLine(Finish);
-                    // Console.WriteLine("-------------------------------------------------------------------------------------------------------");
                 }
             }
 
@@ -311,8 +286,7 @@ namespace AntsTSP
        public double getDist()
         {
              
-            //Console.WriteLine("-------------------------------------------------------------------------------------------------------");
-            return distance;
+             return distance;
         }
 
          
@@ -331,14 +305,12 @@ namespace AntsTSP
 
             return true;
         }
-     
 
+        //W metodzie Roulette wybierania jest ścieżka przy pomocy losowania.Im bardziej korzystniejsza jest droga tym większe ma szanse na wylosowanie.
         public int Roulette(double[] refPaths)
         {
-            double[]  paths = new double[refPaths.Length - visited.Count]; // = refPaths.Clone() as double[];
-            //Console.WriteLine(" PL " + paths.Length + " visited " + visited.Count);
-             
-
+            double[]  paths = new double[refPaths.Length - visited.Count];  
+         
              
             double randomPoint = 0;
             double resultPh = 0;
@@ -346,47 +318,31 @@ namespace AntsTSP
             double sum = paths.Sum();
             int[] resCount = new int[paths.Length];
             int i = 0;
-            // Console.WriteLine("S");
-         //   Console.WriteLine("---------------------------");
+  
             int counter = 0;
-
-            foreach(int k in visited)
-            {
-
-             //  Console.WriteLine("VIISISITED " + k);
-            }
-            //Console.WriteLine("visited" + visited.Count + " paths " + paths.Length);
-            //Console.WriteLine("refPaths.Length " + refPaths.Length + " - " + visited.Count);
+ 
             while (i < refPaths.Length)
             {
                
                 if (check(i, visited))
-                {
-                    //Console.WriteLine(paths.Length + " " + counter + "  miasto nr" + i);
-                    //Console.WriteLine("counter " + counter + "  " +  i);
-                    resCount[counter] = i; // spierdala czasem pozazakres
+                { 
+                    resCount[counter] = i; 
                      
                     paths[counter] = refPaths[i];
-                  //Console.WriteLine(paths[counter] + " | " + resCount[counter] + "   i = " + i);
                     counter++;
                 }
                 i++;
             }
              i = 0;
-          //  Console.WriteLine("---------------------------");
-            //Console.WriteLine("S");
-            //foreach (double x in paths)
-            //{
-            //    Console.WriteLine("Paths   "+x);
-            //}
+         
 
 
-            for (i = 0; i < paths.Length - 1; i++) // skad ten -1
+            for (i = 0; i < paths.Length - 1; i++)  
             {
 
                 int index = i;
                 for (int j = i + 1; j < paths.Length; j++)
-                    if (paths[j] < paths[index])  //min ? sprawdzic - musi byc od min do max
+                    if (paths[j] < paths[index])   
                         index = j;
 
 
@@ -399,19 +355,10 @@ namespace AntsTSP
                 paths[index] = paths[i];
                 paths[i] = smallerNumber;
             }
-
-          //  Console.WriteLine("T");
-            //foreach (double x in paths)
-            //{
-            //    Console.WriteLine(x);
-            //}
-
-            //Console.WriteLine("---------------------------");
-
+             
             randomPoint = (r.Next(0, 100));
             randomPoint  = randomPoint /  100;
-            //Console.WriteLine(randomPoint);
-
+          
             int choosenRes = 0;
             i = 0;
             double lastValue = 0;
@@ -428,7 +375,6 @@ namespace AntsTSP
                   
                     choosenRes = resCount[i];
                     resultPh = paths[i];
-                   //  Console.WriteLine("Hey " + choosenRes);
                     break;
                 }
                 lastValue = value;
@@ -441,8 +387,7 @@ namespace AntsTSP
                 Console.WriteLine("Ant - Roulette - Something goes wrong - resultPH = 0");
             }
 
-          //  Console.WriteLine("ret");
-            return choosenRes; //resultPh; wybieram wybraną scieżke
+             return choosenRes; 
 
         }
 
